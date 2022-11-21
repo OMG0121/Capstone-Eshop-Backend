@@ -5,8 +5,10 @@ module.exports = function (req, res, next) {
   if (!token) return res.status(401).send("Access denied. No token provided.");
   try {
     jwt.verify(token, "myprivatekey");
+    console.log("Auth Successfull");
     next();
   } catch (ex) {
     res.status(400).send("Invalid token.");
+    console.log("Auth Unsuccessfull");
   }
 };

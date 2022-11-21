@@ -43,7 +43,7 @@ const signUP = async (req, res) => {
             last_name: lastName,
             password: bcrypt.hashSync(password, 10),
             phone_number: Number.parseInt(contact),
-            role: "admin",
+            role: "user",
             updatedAt: Date.now(),
         }).then((user) => {
             res.status(200).send(user);
@@ -68,13 +68,18 @@ const login = async (req, res) => {
         }
         else {
             const token = jwt.sign({ _id: usersData[0]._id }, 'myprivatekey');
-            res.status(200).header("x-access-token", token).send({
-                "email": usersData[0].email,
-                "name": usersData[0].first_name + " " + usersData[0].last_name,
-                "isAuthenticated": true,
-            });
+            await users.findOneAndUpdate({email: email}, {token: token, updatedAt: Date.now()})
+            .then((user) => {
+                res.status(200).header("x-access-token", token).send({
+                    "email": user.email,
+                    "name": user.first_name + " " + user.last_name,
+                    "isAuthenticated": true,
+                });
+            })
+            .catch((err) => {
+                res.status(200).send("Invalid Credentials!");
+            })
         }
     }
 }
-
 module.exports = {signUP, login};
