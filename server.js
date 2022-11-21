@@ -5,6 +5,7 @@ const db = require('./config/db.config');
 const userRoutes = require("./routes/users.routes");
 const addressRoutes = require("./routes/address.routes");
 const productsRoutes = require("./routes/products.routes");
+const orderRoutes = require("./routes/orders.routes");
 
 const app = express();
 const port = 8085;
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(userRoutes);
 app.use(addressRoutes);
 app.use(productsRoutes);
+app.use(orderRoutes);
 
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to Upgrad Eshop application development." });
