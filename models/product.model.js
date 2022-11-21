@@ -8,8 +8,8 @@ const productsSchema = new mongoose.Schema({
     price: Number,
     imageURL: String,
     description: String,
-    updateAt: Object,
-    createdAt: Object
+    updateAt: Date,
+    createdAt: Date
 });
 
 const products = mongoose.model("products", productsSchema)

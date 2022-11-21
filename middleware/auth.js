@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 module.exports = function (req, res, next) {
   const token = req.headers["x-access-token"] || req.headers["authorization"];
-  if (!token) return res.status(401).send("Access denied. No token provided.");
+  if (!token) return res.status(401).send("Please Login first to access this endpoint!");
   try {
     jwt.verify(token, "myprivatekey");
     console.log("Auth Successfull");
