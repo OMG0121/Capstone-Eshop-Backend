@@ -3,7 +3,6 @@ const users = require("../models/users.model");
 
 const addAddress = async (req, res) => {
     let token = req.headers["x-access-token"];
-    console.log(req.headers["x-access-token"]);
     let zipcode = req.body.zipcode;
     let state = req.body.state;
     let street = req.body.street;
@@ -11,7 +10,6 @@ const addAddress = async (req, res) => {
     let city = req.body.city;
     let contactNumber = req.body.contactNumber;
     let name = req.body.name;
-    console.log(req.body);
 
     let userData = await users.find({token: token});
 
@@ -21,12 +19,12 @@ const addAddress = async (req, res) => {
     }
 
     if (isNaN(zipcode) || zipcode.length != 6) {
-        res.status(200).send("Invalid zip code!");
+        res.status(200).send({"status":"Invalid zip code!"});
         return;
     }
 
     if (isNaN(contactNumber) || contactNumber.length != 10) {
-        res.status(200).send("Invalid contact number!");
+        res.status(200).send({"status":"Invalid contact number!"});
         return;
     }
     
@@ -46,13 +44,11 @@ const addAddress = async (req, res) => {
         updatedAt: Date.now(),
         user: userData[0]
     }).then((data) => {
-        res.status(200).send(data);
+        res.status(200).send({"data":data, "status": "success"});
     })
     .catch((err) => {
-        res.status(400).send(err);
-        console.log(err);
+        res.status(400).send({"err":err, "status": "error"});
     })
 
 }
-
 module.exports = {addAddress};

@@ -8,19 +8,11 @@ const searchProducts = async (req, res) => {
     let name = req.query.name;
     let sort = req.query.sort;
 
-    if (category == undefined) {
-        category = "";
-    }
-
     if (direction == "ASC") {
         direction = 1;
     }
     else {
         direction = -1;
-    }
-
-    if (name == undefined) {
-        name = "";
     }
 
     if (sort == undefined) {
@@ -30,13 +22,36 @@ const searchProducts = async (req, res) => {
     let filter = {}
     filter[sort] = direction;
 
-    await products.find({$or: [{category: category}, {name: name}]}).sort(filter)
+    if (category == undefined && name == undefined) {
+        await products.find().sort(filter)
     .then((data) => {
         res.status(200).send(data);
+        return;
     })
     .catch((err) => {
         res.status(401).send(err);
+        return;
     })
+    }
+    else {
+        if (category == undefined) {
+            category = "";
+        }
+    
+        if (name == undefined) {
+            name = "";
+        }
+    
+        await products.find({$or: [{category: category}, {name: name}]}).sort(filter)
+        .then((data) => {
+            res.status(200).send(data);
+        })
+        .catch((err) => {
+            res.status(401).send(err);
+        })
+    }
+
+    
 }
 
 const getProductsCategories = async (req, res) => {
@@ -67,7 +82,7 @@ const getProductByProductId = async (req, res) => {
         return;
     }
 
-    res.status(200).send(productsData[0]);
+    res.status(200).send(productsData);
 
 }
 
@@ -104,7 +119,7 @@ const saveProducts = async (req, res) => {
         updateAt: Date.now(),
         createdAt: Date.now()
     }).then((data) => {
-        res.status(200).send(data);
+        res.status(200).send({"data":data, "status": "success"});
     })
     .catch((err) => {
         res.status(400).send(err);
@@ -150,7 +165,7 @@ const updateProductDetails = async (req, res) => {
         description: description,
         updateAt: Date.now()
     }).then((data) => {
-        res.status(200).send(data);
+        res.status(200).send({"data":data, "status": "success"});
     }).catch((err) => {
         res.status(400).send(err);
     })
@@ -181,10 +196,11 @@ const deleteProduct = async(req, res) => {
 
     await products.findOneAndDelete({_id: id})
     .then(() => {
-        res.status(200).send(`Product with ID - ${id} deleted successfully!`);
+        res.status(200).send({"description":`Product with ID - ${id} deleted successfully!`, "status": "success"});
     }).catch((err) => {
         res.status(400).send(err);
     })
     
 }
+
 module.exports = {searchProducts, getProductsCategories, getProductByProductId, saveProducts, updateProductDetails, deleteProduct};
