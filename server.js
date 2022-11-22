@@ -36,3 +36,5 @@ db.mongoose.connect(db.url, {
 app.listen(port, () => {
     console.log(`App started at ${port} port`);
 });
+
+module.exports = app;
